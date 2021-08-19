@@ -15,7 +15,18 @@ app.use(express.static("public"));
 app.set("view engine","ejs");
 app.use(express.urlencoded({extended: true}));
 
+
+
 mongoose.connect("mongodb://localhost:27017/userDB",{useNewUrlParser: true,useUnifiedTopology: true})
+
+app.use(session({
+    secret: "My secret.",
+    resave: false,
+    saveUnintialized: false
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 const userSchema = new mongoose.Schema({
     email: String,
@@ -40,7 +51,6 @@ app.get("/register",function(req,res){
 })
 
 app.post("/register",function(req,res){
-    0
     bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
         const newUser = new User({
             email: req.body.username,
